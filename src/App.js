@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Cell from './components/Cell';
 
 const App = () => {
@@ -7,6 +7,38 @@ const App = () => {
   const [winningMessage, setWinningMessage] = useState(null);
 
   const message = 'It is now ' + go + "'s go";
+
+  useEffect(() => {
+    checkScore();
+  }, [cells]);
+
+  const checkScore = () => {
+    const winningCombos = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    winningCombos.forEach((array) => {
+      let circleWins = array.every((cell) => cells[cell] === 'circle');
+      if (circleWins) {
+        setWinningMessage('Circle Wins');
+        return;
+      }
+    });
+
+    winningCombos.forEach((array) => {
+      let crossWins = array.every((cell) => cells[cell] === 'cross');
+      if (crossWins) {
+        setWinningMessage('Cross Wins');
+        return;
+      }
+    });
+  };
 
   return (
     <div className="app">
@@ -23,7 +55,7 @@ const App = () => {
           />
         ))}
       </div>
-      <p>{message}</p>
+      <p>{winningMessage || message}</p>
     </div>
   );
 };
